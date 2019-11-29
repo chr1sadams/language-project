@@ -4,6 +4,7 @@
   "description": "Twitter bot using the Nylas API",
   "main": "test.js",
   "dependencies": {
+    "bitly": "^6.1.0",
     "fs": "0.0.1-security",
     "nylas": "^4.8.0"
   },

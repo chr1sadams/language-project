@@ -1,8 +1,6 @@
-
+// one full day is approx 86.4 million milliseconds.
 const Nylas = require('nylas');
 const fs = require('fs');
-
-var messageBody = '';
 
 Nylas.config({
     clientId: "9vzuxd9fvv6eddr7zib1x2jen",
@@ -12,12 +10,10 @@ Nylas.config({
 const nylas = Nylas.with("vwTE8AbNrQ8l9xfQVANHAUnS5a5cuw");
 
 nylas.messages.first({in: 'inbox', from: 'student-digest@siena.edu'}).then(message =>{
-    messageBody = message.body;
+    var messageBody = message.body;
+    console.log('message body: ' + messageBody.substring(0,10));
     fs.writeFile("htmlText.html", messageBody, (err) => {
         if (err) throw err;
-        console.log('message body: ' + messageBody.substring(0,8));
         console.log("Html saved.");
     });
 });
-
-console.log('message body: ' + messageBody.substring(0,8));
