@@ -10,11 +10,68 @@ Nylas.config({
 
 const nylas = Nylas.with("vwTE8AbNrQ8l9xfQVANHAUnS5a5cuw");
 
-var biturl = '';
-bitly.shorten("https://dailydigest.siena.edu/students/2019/11/25/lets-pokemon-go-campus-group-chat-walk/")
-    .then(function(result){
-        biturl = result.url;
-        console.log(biturl);
-    }).catch(function(error) {
-        console.error(error);
-    });
+nylas.messages.list({in: 'inbox', from: 'student-digest@siena.edu', limit: 6}).then(messages =>{
+    var dates = [];
+    var partitions = [];
+    var catCount = 0;
+    for (let message of messages) {
+        dates.push(message.date);
+        if (dates.length == 5) {
+            var messageBody = message.body;
+            messageBody = messageBody.substring(messageBody.indexOf("Today's News"), messageBody.indexOf("In Case You Missed It"));
+            
+            var index = 1;
+            var endIndex = 1;
+            while (endIndex != -1) {
+                index = messageBody.indexOf("<h3>");
+                var endIndex = messageBody.indexOf("<h3>", index + 1);
+                if (endIndex != -1) {
+                    partitions.push(messageBody.substring(index, endIndex));
+                    messageBody = messageBody.substring(endIndex);
+                } else {
+                    partitions.push(messageBody.substring(index));
+                }
+            }
+
+            var categories = [];
+            for (var i = 0; i < partitions.length; i++) {
+                categories[i] = [];
+                var str = partitions[i];
+                categories[i][0] = str.substring(str.indexOf('<b>') + 3, str.indexOf("</b>"));
+                str = str.substring(str.indexOf("</h3>") + 5);
+                console.log(categories[i][0] + '\n');
+
+                endIndex = 0;
+                while (endIndex != -1) {
+                    var headline = '';
+                    headline = headline + str.substring(str.indexOf('/">') + 3, str.indexOf("</a>")) + '\n';
+                    var desc = str.substring(str.indexOf("</font>") + 7);
+                    headline = headline + desc.substring(desc.indexOf("'black'>") + 8, desc.indexOf("</font>"));
+                    headline = headline + str.substring(str.indexOf("'black'>") + 8, str.indexOf("</font>")) + '\n';
+                    var hyperlink = str.substring(str.indexOf('href="') + 6, str.indexOf('/">') + 1);
+                    var biturl = await bitly.shorten(hyperlink);
+                    headline = headline + biturl.url;
+
+
+
+
+
+                    /*
+                    bitly.shorten(hyperlink)
+                        .then(function(result) {
+                            console.log(result.url);
+                        }).catch(function(error) {
+                            console.error(error);
+                        });
+                        */
+                    console.log(headline + headline.length + '\n\n');
+                    categories[i].push(headline);
+                    str = str.substring(str.indexOf("<br /><br />") + 12);
+                    endIndex = str.indexOf("href");
+                }
+            }
+
+        }
+    }
+
+});
