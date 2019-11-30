@@ -6,7 +6,8 @@
   "dependencies": {
     "bitly": "^6.1.0",
     "fs": "0.0.1-security",
-    "nylas": "^4.8.0"
+    "nylas": "^4.8.0",
+    "twit": "^2.2.11"
   },
   "devDependencies": {},
   "scripts": {
