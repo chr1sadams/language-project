@@ -57,7 +57,6 @@ async function tweetFormatter() {
                 var str = partitions[i];
                 categories[i][0] = str.substring(str.indexOf('<b>') + 3, str.indexOf("</b>"));
                 str = str.substring(str.indexOf("</h3>") + 5);
-                console.log(categories[i][0] + '\n');
 
                 //take headline information and splice it neatly into a tweet format. store into array afterwards.
                 endIndex = 0;
@@ -71,7 +70,7 @@ async function tweetFormatter() {
                     
                     //separate large html string to scan the headline description and concat to headline variable
                     var desc = str.substring(str.indexOf("</font>") + 7);
-                    headline = headline + desc.substring(desc.indexOf("'black'>") + 8, desc.indexOf("</font>"));
+                    headline = headline + desc.substring(desc.indexOf("'black'>") + 8, desc.indexOf("</font>")).trim();
                     
                     //scan original html string to get authors name and concat to headline variable
                     headline = headline + str.substring(str.indexOf("'black'>") + 8, str.indexOf("</font>")) + '\n';
