@@ -110,8 +110,10 @@ new CronJob('0 8 * * *', function() {
             });
             //handle changing headline arrays.
             categories[0].pop();
-            if (categories[0].length == 1) categories.shift();
-            if (categories.length == 0) clearInterval(interval);
+            if (categories[0].length == 1) {
+                categories.shift();
+                if (categories.length == 0) clearInterval(interval);
+            }
         }, 3600000);
     });
 }, null, true, 'America/New_York');
