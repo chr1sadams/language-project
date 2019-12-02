@@ -3,6 +3,8 @@ const fs = require('fs');
 const BitlyClient = require('bitly').BitlyClient;
 const bitly = new BitlyClient("75712e9e08c53b867bc225a9d1a358ff99d22642");
 const Twit = require('twit');
+const CronJob = require('cron').CronJob;
+const categories = [];
 
 const T = new Twit({
     consumer_key: "W1flukTtPNG8ntlRo5w4i4DyE",
@@ -25,7 +27,12 @@ async function tweetFormatter() {
     
     //initialize variables
     var partitions = [];
-    var categories = [];
+
+    //handle if the email was received more than one day ago
+    if ((Date.now() - message.date) > 86000000) {
+        console.log("Email parsed was from 1 or more day ago");
+        return;
+    }
 
     //create a variable containing message contents in html
     var messageBody = message.body;
@@ -85,11 +92,27 @@ async function tweetFormatter() {
             endIndex = str.indexOf("href");
         }
     }
-    return categories;
+    return;
 }
 
-//call tweetFormatter and handle results to tweet headlines on an interval.
-tweetFormatter().then(function(result) {
-    
-});
+//Create CronJob to tweet headlines on schedule
+new CronJob('0 8 * * *', function() {
+    //call tweetFormatter to parse email and format tweets.
+    tweetFormatter().then(function() {
+        console.log('\n\n');
+        //tweet each headline on an interval of 1 hour per tweet.
+        var interval = setInterval(function() {
+            var post = categories[0][0] + '\n' + categories[0][categories[0].length - 1];
+            console.log(post + '\n' + post.length + '\n');
+            //post tweet
+            T.post('statuses/update', {status: post}, function(err, data, response) {
+                console.log('Tweet Posted!\n');
+            });
+            //handle changing headline arrays.
+            categories[0].pop();
+            if (categories[0].length == 1) categories.shift();
+            if (categories.length == 0) clearInterval(interval);
+        }, 3600000);
+    });
+}, null, true, 'America/New_York');
 
