@@ -151,6 +151,7 @@ new CronJob('0 8 * * *', function() {
                 if (categories.length == 0) {
                     console.log("\nAll tweets posted for the day!");
                     clearInterval(interval); //when there are no more partitions, end the interval
+                }
             }
         }, 3600000); //repeat posting every 3.6mil ms until no more headlines are left for the day.
     });
