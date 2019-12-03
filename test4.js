@@ -148,7 +148,9 @@ new CronJob('0 8 * * *', function() {
             categories[0].pop();       //headline is popped off the partition
             if (categories[0].length == 1) {  //if only the title is left then
                 categories.shift();         //remove the entire partition from categories
-                if (categories.length == 0) clearInterval(interval); //when there are no more partitions, end the interval
+                if (categories.length == 0) {
+                    console.log("\nAll tweets posted for the day!");
+                    clearInterval(interval); //when there are no more partitions, end the interval
             }
         }, 3600000); //repeat posting every 3.6mil ms until no more headlines are left for the day.
     });
